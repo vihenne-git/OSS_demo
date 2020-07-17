@@ -5,7 +5,7 @@ package com.oss.demo.demo;
  * @create 16/7/2020 上午10:08
  */
 import com.aliyun.oss.OSSClient;
-import com.oss.demo.demo.util.OSSUtil;
+import com.oss.demo.demo.util.OssUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -16,25 +16,25 @@ import static org.junit.Assert.assertEquals;
 public class OSSUnitTest {
 //log
     private static final Logger LOG = LoggerFactory.getLogger(OSSUnitTest.class);
-    private OSSUtil ossunit = null;
+    private OssUtil ossunit = null;
     private OSSClient client = null;
     private String bucketName = "vihenne-demo";//根据
     @Before
     public void initUnit(){
-        ossunit = new OSSUtil();
-        client = OSSUtil.getOSSClient();
+        ossunit = new OssUtil();
+        client = OssUtil.getOssClient();
     }
     @Test
     public void testCreateBucket() {
         String bucketName = "oss-test-my";
         //创建bucket
-        assertEquals(true, OSSUtil.createBucket(client, bucketName));
+        assertEquals(true, OssUtil.createBucket(client, bucketName));
     }
     @Test
     public void testDeleteBucket(){
         String bucketName = "oss-test-my";
         //删除bucket
-        OSSUtil.deleteBucket(client, bucketName);
+        OssUtil.deleteBucket(client, bucketName);
         //console log :删除oss-test-myBucket成功
     }
    /* @Test
@@ -68,7 +68,7 @@ public class OSSUnitTest {
     public void testDeleteFile(){
         //注：文件夹下只有一个文件，则文件夹也会一起删除；如果多个文件，只会删除指定文件名的文件
         //删除文件
-        OSSUtil.deleteFile(client, bucketName, "datas/image/", "1.jpg");
+        OssUtil.deleteFile(client, bucketName, "datas/image/", "1.jpg");
         //console log : 删除oss-test-my下的文件datas/image/preossimg.jpg成功
     }
 }

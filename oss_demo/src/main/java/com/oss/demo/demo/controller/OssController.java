@@ -64,7 +64,7 @@ public class OssController {
      * @author: YuHangChen
      * @time: 16/7/2020 下午4:51
      */
-    @GetMapping("/downloadFile")//按id查找用户
+    @GetMapping("/downloadFile")
     public String downloadFile(@RequestParam String fileName) throws IOException {
         ossService.downloadFile(fileName);
         return "下载文件成功";

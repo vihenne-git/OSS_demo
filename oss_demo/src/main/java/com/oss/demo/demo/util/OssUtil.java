@@ -10,22 +10,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import com.aliyun.oss.*;
 import com.aliyun.oss.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-
 import static java.util.concurrent.Executors.*;
 
 @Slf4j
-public class OSSUtil {
-
-
-
+public class OssUtil {
     //阿里云API的内或外网域名
     private static String ENDPOINT;
 
@@ -49,7 +42,7 @@ public class OSSUtil {
      /**
      * 获取阿里云OSS客户端对象
      * */
-     public static final OSSClient getOSSClient(){
+     public static final OSSClient getOssClient(){
          return new OSSClient(ENDPOINT,ACCESS_KEY_ID, ACCESS_KEY_SECRET);
      }
 
@@ -80,7 +73,7 @@ public class OSSUtil {
      * @param diskName 上传文件的目录  --bucket下文件的路径
      * @return String 唯一MD5数字签名
      * */
-     public static final String uploadObject2OSS(OSSClient client, MultipartFile mfile, String bucketName, String diskName) throws IOException {
+     public static final String uploadObject2Oss(OSSClient client, MultipartFile mfile, String bucketName, String diskName) throws IOException {
          File file = null;
          if (mfile.equals("") || mfile.getSize() <= 0) {
              mfile = null;
@@ -122,7 +115,7 @@ public class OSSUtil {
      * @param diskName 文件路径
      * @param key Bucket下的文件的路径名+文件名
      */
-     public static final void DownloadFile(OSSClient client, String bucketName, String diskName, String key,String fileSavePath) throws IOException {
+     public static final void downloadFile(OSSClient client, String bucketName, String diskName, String key,String fileSavePath) throws IOException {
          OSSObject ossObj = client.getObject(bucketName, diskName + key);
          InputStream content = ossObj.getObjectContent();
          try {
@@ -218,8 +211,11 @@ public class OSSUtil {
      *
      *
      * @description: 上传大文件
-     * @param
-     * @return:
+     * @param client OSS客户端
+     * @param mfile 大文件
+     * @param bucketName bucket名称
+     * @param diskName OSS端存储路径
+     * @return: null
      * @author: YuHangChen
      * @time: 16/7/2020 下午5:36
      */
@@ -234,8 +230,6 @@ public class OSSUtil {
             inputStreamToFile(ins, file);
             ins.close();
         }
-
-
         String objectName = diskName + file.getName();
         // 创建InitiateMultipartUploadRequest对象。
         InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName,objectName);
@@ -247,7 +241,7 @@ public class OSSUtil {
         List<PartETag> partETags =  new ArrayList<PartETag>();
         try {
             // 计算文件有多少个分片。
-            final long partSize = 1 * 1024 * 1024L;   // 1MB
+            final long partSize = 1 * 1024 * 1024L;
             final File sampleFile = file;
             long fileLength = sampleFile.length();
             int partCount = (int) (fileLength / partSize);
@@ -255,8 +249,6 @@ public class OSSUtil {
                 partCount++;
             }
             log.info("partCount = "+partCount);
-
-
             // 遍历分片创建线程加入线程池。
             for (int i = 0; i < partCount; i++) {
                 long startPos = i * partSize;
